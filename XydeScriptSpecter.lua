@@ -2,10 +2,13 @@ wait(1)
 -- to do: 
 -- sink
 -- van keybinf
--- fullbrigt
 -- inf stamina
 -- ghost room
--- info w main
+-- Remove doors
+-- hunt
+-- remove doors
+-- FOV
+-- autofarm
 local Rayfield = loadstring(game:HttpGet('https://raw.githubusercontent.com/xMacha/Roblox-GUI-libs/refs/heads/main/Rayfield.lua'))()
 
 local Window = Rayfield:CreateWindow({
@@ -53,6 +56,7 @@ local TabTeleport = Window:CreateTab("Teleport", "map-pin")
 local TabVisuals = Window:CreateTab("Visuals", "eye")
 local TabAutofarm = Window:CreateTab("Autofarm", "refresh-ccw")
 -- Sekcje
+local SectionMisc1 = TabMain:CreateSection("Info")
 local SectionGhostRoom = TabMain:CreateSection("Ghost Room")
 local SectionEvidence = TabMain:CreateSection("Ghost Evidence")
 local SectionMisc1 = TabMain:CreateSection("Misc")
@@ -163,7 +167,6 @@ local RoomDropdown = TabTeleport:CreateDropdown({
    Options = getRoomNames(), -- Pobiera listę na start
    CurrentOption = {"Select Room"},
    MultipleOptions = false,
-   Flag = "RoomTP",
    Callback = function(Options)
       local selectedRoomName = Options[1]
       
@@ -291,7 +294,6 @@ local PlayerDropdown = TabTeleport:CreateDropdown({
     Options = getPlayerNames(),
     CurrentOption = {"Select Player"},
     MultipleOptions = false,
-    Flag = "PlayerTP",
     Callback = function(Options)
         local targetName = Options[1]
         local targetPlayer = game.Players:FindFirstChild(targetName)
@@ -322,5 +324,155 @@ local fullbright = TabVisuals:CreateToggle({
 	else
 		game.Lighting.Ambient = Color3.fromRGB(0, 0, 0)
    end
+   end,
+})
+
+local RunService = game:GetService("RunService")
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+
+-- Zmienne trzymane na zewnątrz, żeby mieć do nich dostęp przy wyłączaniu
+local SanityGui = nil
+local SanityLoop = nil
+
+-- Używamy TabVisuals zgodnie z twoim poleceniem
+local SanityToggle = TabVisuals:CreateToggle({
+   Name = "Show Sanity (Draggable)",
+   CurrentValue = false,
+   Flag = "SanityDisplay",
+   Callback = function(Value)
+       if Value then
+           -- === WŁĄCZANIE ===
+           
+           -- 1. Tworzymy ScreenGui
+           SanityGui = Instance.new("ScreenGui")
+           if pcall(function() SanityGui.Parent = game.CoreGui end) then
+               SanityGui.Parent = game.CoreGui
+           else
+               SanityGui.Parent = LocalPlayer:WaitForChild("PlayerGui")
+           end
+
+           -- 2. Tworzymy Tło (Frame), które będzie można przesuwać
+           local Background = Instance.new("Frame")
+           Background.Name = "SanityBackground"
+           Background.Parent = SanityGui
+           Background.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+           Background.BackgroundTransparency = 0.3
+           Background.Position = UDim2.new(0.8, 0, 0.85, 0) -- Startowa pozycja
+           Background.Size = UDim2.new(0, 200, 0, 50)
+           
+           -- 3. Włączamy przenoszenie myszką
+           Background.Active = true
+           Background.Draggable = true -- To pozwala przesuwać element
+
+           -- Zaokrąglone rogi dla tła (Naprawiony błąd RCorner)
+           local Corner = Instance.new("UICorner")
+           Corner.CornerRadius = UDim.new(0, 8)
+           Corner.Parent = Background
+
+           -- 4. Tworzymy Etykietę z tekstem (w środku tła)
+           local Label = Instance.new("TextLabel")
+           Label.Parent = Background
+           Label.Size = UDim2.new(1, 0, 1, 0) -- Wypełnia całe tło
+           Label.BackgroundTransparency = 1 -- Przezroczysta, bo tło ma kolor
+           Label.TextColor3 = Color3.fromRGB(255, 255, 255)
+           Label.TextSize = 22
+           Label.Font = Enum.Font.SourceSansBold
+           Label.Text = "Waiting..."
+
+           -- 5. Pętla aktualizująca wartość Sanity
+           SanityLoop = RunService.RenderStepped:Connect(function()
+               local sanityValue = LocalPlayer:GetAttribute("Sanity")
+               
+               if sanityValue then
+                   Label.Text = "Sanity: " .. tostring(math.floor(sanityValue))
+                   
+                   -- Opcjonalnie: Zmiana koloru tekstu gdy mało Sanity
+                   if sanityValue < 50 then
+                       Label.TextColor3 = Color3.fromRGB(255, 50, 50) -- Czerwony
+                   else
+                       Label.TextColor3 = Color3.fromRGB(255, 255, 255) -- Biały
+                   end
+               else
+                   Label.Text = "Sanity: N/A"
+               end
+           end)
+
+       else
+           -- === WYŁĄCZANIE ===
+           
+           if SanityGui then
+               SanityGui:Destroy()
+               SanityGui = nil
+           end
+           
+           if SanityLoop then
+               SanityLoop:Disconnect()
+               SanityLoop = nil
+           end
+       end
+   end,
+})
+
+local RunService = game:GetService("RunService")
+local Workspace = game:GetService("Workspace")
+local Camera = Workspace.CurrentCamera
+
+-- Zmienna przechowująca wybrane FOV
+local TargetFOV = 70 -- Domyślna wartość
+local FOVLoop = nil
+
+-- Uruchamiamy pętlę, która "siłowo" trzyma ustawione FOV
+-- Dzięki temu inne skrypty gry nie mogą go zmienić
+if not FOVLoop then
+    FOVLoop = RunService.RenderStepped:Connect(function()
+        Camera.FieldOfView = TargetFOV
+    end)
+end
+
+local FOVSlider = TabVisuals:CreateSlider({
+   Name = "Field of View",
+   Range = {30, 120}, -- Zakres FOV (standardowo 70, max zazwyczaj 120)
+   Increment = 1,
+   Suffix = "°",
+   CurrentValue = 70,
+   Flag = "FOV_Slider",
+   Callback = function(Value)
+       -- Slider aktualizuje tylko zmienną, pętla wyżej robi resztę roboty
+       TargetFOV = Value
+   end,
+})
+local RunService = game:GetService("RunService")
+local LocalPlayer = game:GetService("Players").LocalPlayer
+local StaminaLoop = nil -- Zmienna do przechowywania pętli
+
+local StaminaToggle = TabMain:CreateToggle({
+   Name = "Infinite Stamina",
+   CurrentValue = false,
+   Flag = "InfStamina",
+   Callback = function(Value)
+       if Value then
+           -- === WŁĄCZANIE (ON) ===
+           -- Uruchamiamy pętlę, która działa w tle bardzo szybko (co klatkę)
+           StaminaLoop = RunService.RenderStepped:Connect(function()
+               
+               -- Opcja 1: Sprawdzamy, czy Stamina jest Atrybutem (najczęstsze)
+               if LocalPlayer:GetAttribute("Stamina") ~= nil then
+                   LocalPlayer:SetAttribute("Stamina", 100)
+               
+               -- Opcja 2: Sprawdzamy, czy Stamina jest obiektem (np. IntValue/NumberValue)
+               elseif LocalPlayer:FindFirstChild("Stamina") then
+                   LocalPlayer.Stamina.Value = 100
+               end
+               
+           end)
+       else
+           -- === WYŁĄCZANIE (OFF) ===
+           -- Zatrzymujemy pętlę, aby gra wróciła do normy
+           if StaminaLoop then
+               StaminaLoop:Disconnect()
+               StaminaLoop = nil
+           end
+       end
    end,
 })
