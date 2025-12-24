@@ -1,0 +1,24 @@
+if not key then
+  key = ""
+end
+local queue_on_teleport = queue_on_teleport or syn.queue_on_teleport or fluxus.queue_on_teleport
+queue_on_teleport([[loadstring(game:HttpGet('https://raw.githubusercontent.com/xMacha/Xyde/refs/heads/main/source/XydeLoader'))()]])
+local BASE_URL = "https://xxMacha.pythonanywhere.com/api/check_key?k="
+
+local success, response = pcall(function()
+    return game:HttpGet(BASE_URL .. key)
+end)
+local function findscript()
+	if currentPlaceId == 8417221956 then
+		loadstring(game:HttpGet('https://raw.githubusercontent.com/xMacha/Xyde/refs/heads/main/source/specter/XydeScriptSpecter.lua'))()
+	end
+end
+-- === WYNIK ===
+if success then
+    if response == "true" then
+        print("Key - ✅")     
+		findscript()
+    else
+        warn("Key - ❌")
+    end
+end
