@@ -1,12 +1,12 @@
 -- get key from https://macha.lol or https://work.ink/2ba3/xyde-key-system or https://xxmacha.pythonanywhere.com
 -- key = "YOUR KEY" 
--- loadstring(game:HttpGet('https://raw.githubusercontent.com/xMacha/Xyde/refs/heads/main/source/XydeLoader'))()
+-- loadstring(game:HttpGet('https://raw.githubusercontent.com/xMacha/Xyde/refs/heads/main/source/XydeLoader.lua'))()
 
 if not key then
   key = ""
 end
 local queue_on_teleport = queue_on_teleport or syn.queue_on_teleport or fluxus.queue_on_teleport
-queue_on_teleport([[loadstring(game:HttpGet('https://raw.githubusercontent.com/xMacha/Xyde/refs/heads/main/source/XydeLoader'))()]])
+queue_on_teleport([[loadstring(game:HttpGet('https://raw.githubusercontent.com/xMacha/Xyde/refs/heads/main/source/XydeLoader.lua'))()]])
 local BASE_URL = "https://xxMacha.pythonanywhere.com/api/check_key?k="
 local currentPlaceId = game.PlaceId
 
@@ -15,7 +15,7 @@ local success, response = pcall(function()
 end)
 local function findscript()
 	if currentPlaceId == 8417221956 then
-		loadstring(game:HttpGet('https://raw.githubusercontent.com/xMacha/Xyde/refs/heads/main/source/specter/XydeScriptSpecter'))()
+		loadstring(game:HttpGet('https://raw.githubusercontent.com/xMacha/Xyde/refs/heads/main/source/specter/XydeScriptSpecter.lua'))()
 	end
 end
 -- === WYNIK ===
