@@ -14,7 +14,7 @@ local success, response = pcall(function()
 end)
 local function findscript()
 	if currentPlaceId == 8417221956 then
-		loadstring(game:HttpGet('https://raw.githubusercontent.com/xMacha/Xyde/refs/heads/main/source/specter/XydeScriptSpecter.lua'))()
+		loadstring(game:HttpGet('https://raw.githubusercontent.com/xMacha/Xyde/refs/heads/main/source/specter/XydeScriptSpecter'))()
 	end
 end
 -- === WYNIK ===
