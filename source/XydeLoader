@@ -7,6 +7,7 @@ end
 local queue_on_teleport = queue_on_teleport or syn.queue_on_teleport or fluxus.queue_on_teleport
 queue_on_teleport([[loadstring(game:HttpGet('https://raw.githubusercontent.com/xMacha/Xyde/refs/heads/main/source/XydeLoader'))()]])
 local BASE_URL = "https://xxMacha.pythonanywhere.com/api/check_key?k="
+local currentPlaceId = game.PlaceId
 
 local success, response = pcall(function()
     return game:HttpGet(BASE_URL .. key)
