@@ -651,99 +651,83 @@ local SanityToggle = TabVisuals:CreateToggle({
 -- ============================================================================
 
 TabAuto:CreateToggle({
-   Name = "Auto Find Ghost Room (Debug)",
+   Name = "Auto Bone Farm (Debug)",
    CurrentValue = false,
-   Flag = "AutoFindGhost",
+   Flag = "AutoBone",
    Callback = function(Value)
-       getgenv().AutoFindGhost = Value
+       getgenv().AutoBoneFarm = Value
        
        if Value then
            task.spawn(function()
-               while getgenv().AutoFindGhost do
-                   print("[DEBUG] Rozpoczynam proces szukania ducha...")
+               while getgenv().AutoBoneFarm do
+                   task.wait(1) -- Krótka przerwa na starcie pętli
                    
-                   -- 1. Sprawdzenie czy mamy EMF Reader w ręce/modelu postaci
-                   local Equip = LocalPlayer.Character:FindFirstChild("EquipmentModel")
-                   local EMFTool = Equip and Equip:FindFirstChild("2") -- Dioda sygnalizacyjna
-                   local EMFStatus = Equip and Equip:FindFirstChild("1") -- Status włączenia
-                   
-                   if not EMFTool then 
-                       Rayfield:Notify({Title="DEBUG", Content="Ubierz EMF Reader!", Duration=3})
-                       print("[DEBUG] Błąd: Brak EMF Readera w ręce.")
-                       
-                       -- Próba wyłączenia toggle, żeby nie spamowało błędem
-                       -- (W Rayfield manualne wyłączenie toggle z kodu bywa trudne, więc po prostu czekamy)
-                       task.wait(2)
-                       continue 
+                   -- Sprawdzenie czy postać istnieje
+                   if not LocalPlayer.Character or not LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
+                       print("[DEBUG] Czekam na postać...")
+                       task.wait(1)
+                       continue
                    end
 
-                   -- 2. Włączenie EMF jeśli jest wyłączony (Logika z Xyde)
-                   if not EMFStatus or EMFStatus.Color ~= Color3.fromRGB(52, 142, 64) then
-                       print("[DEBUG] Włączam EMF Reader przez Remote...")
-                       ReplicatedStorage.Packages.Knit.Services.InventoryService.RF.Toggle:InvokeServer("EMF Reader")
-                       task.wait(0.5)
-                   end
+                   print("[DEBUG] Szukam kości na mapie...")
+                   
+                   -- Definicje obiektów
+                   local Map = Workspace:FindFirstChild("Map")
+                   local Bone = Map and Map:FindFirstChild("Bone")
+                   local VanToggle = Workspace:WaitForChild("Van"):WaitForChild("Close"):WaitForChild("Toggle")
 
-                   local StartPos = LocalPlayer.Character.HumanoidRootPart.CFrame
-                   Rayfield:Notify({Title="DEBUG", Content="Skanowanie pokoi...", Duration=2})
-                   print("[DEBUG] Zapisano pozycję startową. Rozpoczynam pętlę po pokojach.")
+                   -- 1. ZBIERANIE KOŚCI
+                   if Bone then
+                       Rayfield:Notify({Title="DEBUG", Content="Znaleziono kość! Teleport...", Duration=2})
+                       print("[DEBUG] Kość znaleziona: " .. tostring(Bone.CFrame))
 
-                   local FoundRoom = nil
+                       -- Teleport do kości
+                       LocalPlayer.Character.HumanoidRootPart.CFrame = Bone.CFrame
+                       task.wait(0.5) -- Czekamy aż serwer ogarnie pozycję
 
-                   -- 3. Pętla po pokojach (Logika z Xyde)
-                   if Map:FindFirstChild("Rooms") then
-                       for _, r in pairs(Map.Rooms:GetChildren()) do
-                           if not getgenv().AutoFindGhost then break end -- Przerwanie jeśli wyłączysz toggle
-
-                           if r:IsA("Folder") and r:FindFirstChild("Hitbox") then
-                               -- Teleport do pokoju
-                               LocalPlayer.Character.HumanoidRootPart.CFrame = r.Hitbox.CFrame
-                               Camera.CFrame = r.Hitbox.CFrame
-                               
-                               -- Debug: Gdzie jesteśmy
-                               -- print("[DEBUG] Sprawdzam: " .. r.Name) 
-                               
-                               task.wait(0.65) -- Czas na odświeżenie EMF (jak w oryginale)
-
-                               -- Sprawdzenie koloru diody (Logika z Xyde)
-                               -- Kolor aktywny: 131, 156, 49
-                               if EMFTool.Color == Color3.fromRGB(131, 156, 49) then
-                                   print("[DEBUG] Wykryto potencjalny sygnał w: " .. r.Name)
-                                   task.wait(1.0) -- Podwójne sprawdzenie dla pewności
-                                   
-                                   if EMFTool.Color == Color3.fromRGB(131, 156, 49) then
-                                       FoundRoom = r
-                                       break -- Przerywamy pętlę for
-                                   end
-                               end
+                       -- Próba podniesienia (ProximityPrompt)
+                       local prompt = Bone:FindFirstChildWhichIsA("ProximityPrompt", true)
+                       if prompt then
+                           print("[DEBUG] Klikam kość (x10)...")
+                           for i=1, 10 do
+                               fireproximityprompt(prompt)
+                               task.wait(0.05)
                            end
+                           Rayfield:Notify({Title="DEBUG", Content="Próba podniesienia zakończona", Duration=2})
+                       else
+                           print("[DEBUG] BŁĄD: Kość nie ma ProximityPrompt!")
                        end
+                   else
+                       print("[DEBUG] Nie znaleziono kości (może już zebrana lub bug mapy)")
+                       Rayfield:Notify({Title="DEBUG", Content="Brak kości na mapie", Duration=2})
                    end
 
-                   -- 4. Obsługa wyniku
-                   LocalPlayer.Character.HumanoidRootPart.CFrame = StartPos -- Powrót na start
-                   
-                   if FoundRoom then
-                       getgenv().GhostRoom = FoundRoom
-                       
-                       -- Aktualizacja labela w zakładce Main (jeśli istnieje)
-                       if GhostRoomLabel then
-                           GhostRoomLabel:Set("Ghost Room: " .. FoundRoom.Name)
+                   task.wait(1)
+
+                   -- 2. UCIECZKA (VAN)
+                   if VanToggle then
+                       print("[DEBUG] Uciekam do Vana...")
+                       Rayfield:Notify({Title="DEBUG", Content="Ucieczka (Van)...", Duration=2})
+
+                       -- Teleport do guzika
+                       LocalPlayer.Character.HumanoidRootPart.CFrame = VanToggle.CFrame
+                       task.wait(0.5)
+
+                       -- Kliknięcie guzika
+                       local vanPrompt = VanToggle:FindFirstChildWhichIsA("ProximityPrompt", true)
+                       if vanPrompt then
+                           fireproximityprompt(vanPrompt)
+                           print("[DEBUG] Kliknięto Van Toggle")
                        end
                        
-                       Rayfield:Notify({Title="SUKCES", Content="Pokój: " .. FoundRoom.Name, Image="ghost"})
-                       print("[DEBUG] ZNALEZIONO POKÓJ: " .. FoundRoom.Name)
-                       
-                       -- Wyłączamy pętlę po znalezieniu (zeby nie szukał w kółko tego samego)
-                       break 
-                   else
-                       print("[DEBUG] Nie znaleziono pokoju w tym przelocie. Ponawiam za 2s...")
-                       task.wait(2)
+                       -- Czekamy chwilę, żeby gra zdążyła zareagować przed kolejną pętlą
+                       -- Jeśli gra się skończy, pętla i tak zostanie przerwana przez teleport
+                       task.wait(5) 
                    end
                end
-               
-               print("[DEBUG] Pętla Auto Find zakończona.")
            end)
+       else
+           print("[DEBUG] Auto Bone Farm zatrzymany.")
        end
    end,
 })
