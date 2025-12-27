@@ -2,6 +2,7 @@
 -- key = "YOUR KEY" 
 -- loadstring(game:HttpGet('https://raw.githubusercontent.com/xMacha/Xyde/refs/heads/main/source/XydeLoader.lua'))()
 
+discord = "https://discord.gg/p9jCxg5m"
 if not key then
   key = ""
 end
