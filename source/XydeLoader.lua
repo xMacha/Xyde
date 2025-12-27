@@ -18,6 +18,9 @@ local function findscript()
 	if currentPlaceId == 8417221956 then
 		loadstring(game:HttpGet('https://raw.githubusercontent.com/xMacha/Xyde/refs/heads/main/source/specter/XydeScriptSpecter.lua'))()
 	end
+	if currentPlaceId == 2753915549 or currentPlaceId == 4442272183 or currentPlaceId == 7449423635 then
+		loadstring(game:HttpGet('https://raw.githubusercontent.com/xMacha/Xyde/refs/heads/main/source/bloxfruit/XydeScriptBloxfruit.lua'))()
+	end
 end
 -- === WYNIK ===
 if success then
