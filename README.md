@@ -1,3 +1,4 @@
+![Xyde logo](Xyde.png)
 # What is Xyde?
 Xyde is a Roblox script that supports multiple games.
 # How to use Xyde?
