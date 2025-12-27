@@ -1,4 +1,3 @@
-![Xyde logo](Xyde.png)
 # What is Xyde?
 Xyde is a Roblox script that supports multiple games.
 # How to use Xyde?
@@ -18,3 +17,4 @@ To get a key, you need to go to https://macha.lol and complete the work.ink step
 
 
 **Our [Discord](https://discord.gg/p9jCxg5m)**
+![Xyde logo](Xyde.png)
