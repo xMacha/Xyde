@@ -1,14 +1,19 @@
 # What is Xyde?
-Xyde to skrypt do roblox który wspiera wiele gier
+Xyde is a Roblox script that supports multiple games.
 # How to use Xyde?
-Zainstaluj dowolny executor do roblox, i wklej do niego ten skrypt:
+Install any Roblox executor and paste this script into it:
 ```
 -- get key from https://macha.lol or https://work.ink/2ba3/xyde-key-system or https://xxmacha.pythonanywhere.com
 key = "YOUR KEY" 
 loadstring(game:HttpGet('https://raw.githubusercontent.com/xMacha/Xyde/refs/heads/main/source/XydeLoader.lua'))()
 ```
-Executor polecam pobrac z https://whatexpsare.online/
+I recommend downloading an executor from https://whatexpsare.online/
+# Supported games
+- Specter
+- Blox Fruits
 # How to get key
-Żeby zdobyć klucz trzeba wejsc na strone https://macha.lol i przejsc przez work.ini
+To get a key, you need to go to https://macha.lol and complete the work.ink steps.
 
-**Nasz [Discord](https://discord.gg/p9jCxg5m)**
+
+
+**Our [Discord](https://discord.gg/p9jCxg5m)**
