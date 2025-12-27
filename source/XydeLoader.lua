@@ -22,9 +22,6 @@ end
 
 if PreventMultipleExecutions() then return end
 
--- 4. BLOKADA WEWNĘTRZNEGO QUEUE_ON_TELEPORT
--- To zapobiega ładowaniu drugiej wersji skryptu z GitHuba po teleporcie.
--- Dzięki temu działa tylko Twoja lokalna wersja (wrzuć ten plik do folderu AutoExec!).
 local old_queue = queue_on_teleport or syn.queue_on_teleport or fluxus.queue_on_teleport
 if old_queue then
     getgenv().queue_on_teleport = function(...) 
