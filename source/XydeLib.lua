@@ -1,5 +1,8 @@
 local XydeLib = {}
 
+-- ==========================================
+-- SERWISY I ZMIENNE
+-- ==========================================
 local TweenService = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
 local HttpService = game:GetService("HttpService")
@@ -10,16 +13,22 @@ local RunService = game:GetService("RunService")
 XydeLib.Flags = {} 
 XydeLib.Folder = "XydeConfig" 
 
+-- ==========================================
+-- MOTYW (THEME)
+-- ==========================================
 local theme = {
     Background = Color3.fromRGB(20, 20, 20),
     Sidebar = Color3.fromRGB(25, 25, 25),
     Section = Color3.fromRGB(30, 30, 30),
-    Accent = Color3.fromRGB(148, 0, 211),
+    Accent = Color3.fromRGB(148, 0, 211), -- Fioletowy Akcent
     Text = Color3.fromRGB(255, 255, 255),
     TextDark = Color3.fromRGB(170, 170, 170),
     Outline = Color3.fromRGB(50, 50, 50)
 }
 
+-- ==========================================
+-- GŁÓWNA FUNKCJA (CREATE WINDOW)
+-- ==========================================
 function XydeLib:CreateWindow(settings)
     local Window = {}
     Window.Tabs = {}
@@ -31,6 +40,7 @@ function XydeLib:CreateWindow(settings)
     ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
     if pcall(function() ScreenGui.Parent = CoreGui end) then else ScreenGui.Parent = Players.LocalPlayer.PlayerGui end
 
+    -- Ukrywanie Menu (Right Shift)
     local uiVisible = true
     UserInputService.InputBegan:Connect(function(input, gp)
         if input.KeyCode == Enum.KeyCode.RightShift then
@@ -39,6 +49,7 @@ function XydeLib:CreateWindow(settings)
         end
     end)
 
+    -- Główna Rama
     local MainFrame = Instance.new("Frame")
     MainFrame.Name = "MainFrame"
     MainFrame.Size = UDim2.new(0, 550, 0, 400)
@@ -57,6 +68,7 @@ function XydeLib:CreateWindow(settings)
     UIStroke.Thickness = 2
     UIStroke.Parent = MainFrame
 
+    -- Pasek Tytułowy
     local TopBar = Instance.new("Frame")
     TopBar.Size = UDim2.new(1, 0, 0, 40)
     TopBar.BackgroundColor3 = theme.Sidebar
@@ -74,6 +86,7 @@ function XydeLib:CreateWindow(settings)
     Title.TextXAlignment = Enum.TextXAlignment.Left
     Title.Parent = TopBar
 
+    -- Kontener na Zakładki
     local TabHolder = Instance.new("ScrollingFrame")
     TabHolder.Name = "TabHolder"
     TabHolder.Size = UDim2.new(0, 130, 1, -40)
@@ -93,6 +106,7 @@ function XydeLib:CreateWindow(settings)
     TabPadding.PaddingLeft = UDim.new(0, 10)
     TabPadding.Parent = TabHolder
 
+    -- Kontener na Strony
     local PageHolder = Instance.new("Frame")
     PageHolder.Name = "PageHolder"
     PageHolder.Size = UDim2.new(1, -130, 1, -40)
@@ -100,6 +114,7 @@ function XydeLib:CreateWindow(settings)
     PageHolder.BackgroundTransparency = 1
     PageHolder.Parent = MainFrame
 
+    -- Przesuwanie Okna (Draggable)
     local dragging, dragInput, dragStart, startPos
     TopBar.InputBegan:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 then
@@ -117,6 +132,10 @@ function XydeLib:CreateWindow(settings)
         end
     end)
 
+    -- ==========================================
+    -- SYSTEM CONFIG I POWIADOMIENIA
+    -- ==========================================
+    
     local NotificationHolder = Instance.new("Frame")
     NotificationHolder.Size = UDim2.new(0, 300, 1, -20)
     NotificationHolder.Position = UDim2.new(1, -320, 0, 10)
@@ -201,6 +220,9 @@ function XydeLib:CreateWindow(settings)
         })
     end
 
+    -- ==========================================
+    -- SYSTEM ZAKŁADEK (TABS)
+    -- ==========================================
     function Window:CreateTab(name)
         local Tab = {}
         local first = false
@@ -249,6 +271,10 @@ function XydeLib:CreateWindow(settings)
             Page.Visible = true
             TweenService:Create(TabButton, TweenInfo.new(0.2), {BackgroundColor3 = theme.Accent}):Play()
         end)
+
+        -- ==========================================
+        -- ELEMENTY UI
+        -- ==========================================
 
         function Tab:CreateSection(text)
             local SectionFrame = Instance.new("Frame")
@@ -593,6 +619,9 @@ function XydeLib:CreateWindow(settings)
         return Tab
     end
 
+    -- ==========================================
+    -- WSTECZNA KOMPATYBILNOŚĆ
+    -- ==========================================
     local MainTab = Window:CreateTab("Main")
     function Window:CreateLabel(txt) MainTab:CreateLabel(txt) end
     function Window:CreateToggle(opts) MainTab:CreateToggle(opts) end
