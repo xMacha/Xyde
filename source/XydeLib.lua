@@ -593,6 +593,15 @@ function XydeLib:CreateWindow(settings)
         return Tab
     end
 
+    local MainTab = Window:CreateTab("Main")
+    function Window:CreateLabel(txt) MainTab:CreateLabel(txt) end
+    function Window:CreateToggle(opts) MainTab:CreateToggle(opts) end
+    function Window:CreateButton(opts) MainTab:CreateButton(opts) end
+    function Window:CreateInput(opts) MainTab:CreateInput(opts) end
+    function Window:CreateSlider(opts) MainTab:CreateSlider(opts) end
+    function Window:CreateDropdown(opts) MainTab:CreateDropdown(opts) end
+    function Window:CreateBind(opts) MainTab:CreateBind(opts) end
+
     return Window
 end
 
