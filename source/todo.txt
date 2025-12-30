@@ -5,9 +5,8 @@ Blox Fruits
 + inf stamina
 + Autorace
 Specter
-+ Book
 + Faster ghost room
-+ motion fix
++ ghost trait
 
 
 
