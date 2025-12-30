@@ -8,3 +8,16 @@ Specter
 + Book
 + Faster ghost room
 + motion fix
+
+
+
+----- notes --------
+
+Mimic - chat
+
+flicker - widzialność ciagle workspace.NPCs.GLOBAL.Base zmienia się
+
+tormentor - niszczy swiatla, dźwięk, wszystko ciemniejsze
+
+trickstar - rzuca rzeczami
+workspace.Map.EventObjects.Throwable
